@@ -1,0 +1,23 @@
+# Compiled python modules
+*.pyc
+__pycache__/
+
+# databases
+*.sqlite3
+*.sql
+*.dump
+*.log
+
+# IDE-specific directories
+.idea/
+.vscode/
+
+# Virtual environment
+venv/
+env/
+
+# Media
+media/
+
+.env
+www/migrations/
