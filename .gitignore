@@ -20,4 +20,4 @@ env/
 media/
 
 .env
-www/migrations/
+**/migrations/*
