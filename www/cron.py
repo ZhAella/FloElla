@@ -1,33 +1,8 @@
 from django_cron import CronJobBase, Schedule
 from django.utils import timezone
 from datetime import timedelta
+from users.models import GirlUser
 from . import models
-
-
-def change_status():
-    today = timezone.now().date()
-    users = models.MenstrualCycle.objects.values('user_id')
-
-    for user in users:
-        cycle = models.MenstrualCycle.objects.filter(user_id=user['user_id']).order_by('-end_data').first()
-        if cycle:
-            if (today - cycle.end_data).days == 0:
-                models.Status.objects.create(name='Фолликулярная фаза')
-
-            elif (today - cycle.end_data).days == 3:
-                models.Status.objects.create(name='Овуляция')
-
-            elif (today - cycle.end_data).days == 17:
-                models.Status.objects.create(name='Лютеиновая фаза')
-
-
-# class UpdateStatusCronJob(CronJobBase):
-#     RUN_EVERY_MINS = 60 * 24
-#     schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
-#     code = 'www.update_status_cron_job'
-#
-#     def do(self):
-#         change_status()
 
 
 class UpdateStatusCronJob(CronJobBase):
@@ -37,12 +12,20 @@ class UpdateStatusCronJob(CronJobBase):
 
     @staticmethod
     def do():
-        cycles_to_update = models.MenstrualCycle.objects.filter(
-            status__name='Menstruation Ended',
-            end_data__lte=(timezone.now() - timedelta(days=28))
-        )
+        today = timezone.now().date()
+        users = GirlUser.objects.all()
 
-        new_status = models.Status.objects.get(name='Menstruation Started')
-        for cycle in cycles_to_update:
-            cycle.status = new_status
-            cycle.save()
+        for user in users:
+            last_menstrual_day = models.MenstrualDayStatus.objects.filter(
+                user_id=user.id,
+                name='Menstrual day'
+            ).order_by('-created_date').first()
+
+            if last_menstrual_day:
+                next_menstrual_day = last_menstrual_day.created_date + timedelta(days=28) + timedelta(days=28)
+
+                if today >= next_menstrual_day.date():
+                    models.MenstrualDayStatus.objects.create(
+                        name='Probably menstruation',
+                        user_id=user
+                    )
