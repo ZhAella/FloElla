@@ -1,24 +1,16 @@
 from django.db import models
-from users.models import GirlUser
+from users.models import CustomUser
 
 
-class Status(models.Model):
-    name = models.CharField(max_length=50)
+class MenstrualDayStatus(models.Model):
+    user_id = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
-
-class MenstrualCycle(models.Model):
-    user_id = models.ForeignKey(GirlUser, on_delete=models.CASCADE)
-    start_data = models.DateField(auto_now=True)
-    end_data = models.DateField()
-    status = models.ForeignKey(Status, on_delete=models.CASCADE)
-
-
-class Reminder(models.Model):
-    user_id = models.ForeignKey(GirlUser, on_delete=models.CASCADE)
-    text = models.TextField()
-    data = models.DateField()
-
-
-class Symptom(models.Model):
-    name = models.CharField(max_length=100)
-    user_id = models.ForeignKey(GirlUser, on_delete=models.CASCADE)
+    STATUS_CHOICES = (
+        ('periods', 'Periods.'),
+        ('ordinary_day', 'Ordinary Day.'),
+        ('ovulation', 'Ovulation.'),
+        ('period_may_start', 'Maybe your period will start today.'),
+        ('delay_of_menstruation', 'Delay of menstruation.')
+    )
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='ordinary_day')
+    date = models.DateField(auto_now_add=True)
