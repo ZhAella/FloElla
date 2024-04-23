@@ -3,12 +3,12 @@ from users.models import GirlUser
 
 
 class MenstrualDayStatus(models.Model):
-    status_choice = {
-        "Menstrual day": "Menstrual day",
-        "Probably menstruation": "Probably menstruation",
-        "Not menstruating": "Not menstruating"
-    }
-    name = models.CharField(max_length=50, choices=status_choice)
+    STATUS_CHOICES = [
+        ("Menstrual day", "Menstrual day"),
+        ("Probably menstruation", "Probably menstruation"),
+        ("Not menstruating", "Not menstruating")
+    ]
+    name = models.CharField(max_length=50, choices=STATUS_CHOICES)
     user_id = models.ForeignKey(GirlUser, on_delete=models.CASCADE)
 
 

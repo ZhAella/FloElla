@@ -1,5 +1,5 @@
 from apscheduler.schedulers.background import BackgroundScheduler
-from . import jobs
+from .management.commands import jobs
 
 scheduler = BackgroundScheduler()
 
