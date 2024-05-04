@@ -9,17 +9,33 @@ def update_status():
     users = GirlUser.objects.all()
 
     for user in users:
-        last_menstrual_day = GirlUser.end_data
-
+        last_menstrual_day = user.end_date
         if last_menstrual_day:
+            duration = (last_menstrual_day - user.start_date).days
+            follicular_phase = 14 - duration
+
             next_menstrual_day = last_menstrual_day + timedelta(days=28)
+            ovulation = last_menstrual_day + timedelta(days=follicular_phase)
+            luteinization = ovulation + timedelta(days=14)
 
-            if today >= next_menstrual_day.date():
+            current_status = None
+            delay_days = None
+
+            if today >= next_menstrual_day:
+                delay = (today - next_menstrual_day).days
+                delay_days = delay + 1
+                current_status = "Delay"
+            elif today == ovulation:
+                current_status = 'Ovulation'
+            elif today == luteinization:
+                current_status = 'Luteinization'
+            print(current_status)
+            if current_status:
                 models.MenstrualDayStatus.objects.create(
-                    name='Probably menstruation',
-                    user_id=user
+                    name=current_status,
+                    delay_days=delay_days,
+                    user_id=user,
+                    date=today
                 )
-            print('Changed')
+                print('Changed')
 
-# def print_hello():
-#     print("HELLO")

@@ -12,7 +12,7 @@ class WwwConfig(AppConfig):
         start_scheduler()
 
 
-@receiver(request_finished)
+# @receiver(request_finished)
 def on_request_finished(sender, **kwargs):
     from .scheduler import stop_scheduler
     stop_scheduler()

@@ -6,5 +6,5 @@ class GirlUser(AbstractUser):
     weight = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     height = models.DecimalField(max_digits=5, decimal_places=2, null=True)
     age = models.IntegerField(null=True)
-    start_data = models.DateField(auto_now=True, null=True)
-    end_data = models.DateField(auto_now=True, null=True)
+    start_date = models.DateField(null=True)
+    end_date = models.DateField(null=True)

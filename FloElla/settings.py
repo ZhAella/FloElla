@@ -128,6 +128,12 @@ SIMPLE_JWT = {
 }
 
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
 DJOSER = {
     'SERIALIZERS': {
         'user_create': 'users.serializers.GirlUserCreateSerializer',
