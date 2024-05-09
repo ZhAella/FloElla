@@ -5,6 +5,7 @@ from users.models import GirlUser
 class MenstrualDayStatus(models.Model):
     status_choice = [
         ("Menstrual day", "Menstrual day"),
+        ('Follicular phase', 'Follicular phase'),
         ("Delay", "Delay"),
         ("Ovulation", "Ovulation"),
         ("Luteinization", "Luteinization")
@@ -14,6 +15,9 @@ class MenstrualDayStatus(models.Model):
     user_id = models.ForeignKey(GirlUser, on_delete=models.CASCADE)
     date = models.DateField(null=True)
 
+    def __str__(self):
+        return f"{self.name} - {self.date}"
+
 
 class Reminder(models.Model):
     user_id = models.ForeignKey(GirlUser, on_delete=models.CASCADE)
@@ -21,7 +25,15 @@ class Reminder(models.Model):
     data = models.DateField()
 
 
-class Symptom(models.Model):
+class SymptomName(models.Model):
     name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
+class UserSymptom(models.Model):
+    symptom = models.ForeignKey(SymptomName, on_delete=models.CASCADE)
     user_id = models.ForeignKey(GirlUser, on_delete=models.CASCADE)
+    date = models.DateField(null=True)
     is_active = models.BooleanField(default=False)
