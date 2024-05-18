@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_crontab',
     'djoser',
     'www',
     'users'
@@ -133,3 +134,8 @@ DJOSER = {
         'user_create': 'users.serializers.GirlUserCreateSerializer',
     }
 }
+
+
+CRONJOBS = [
+    ('0 0 * * *', 'www.jobs.count_days'),
+]
