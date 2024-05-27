@@ -1,3 +1,4 @@
+from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from datetime import datetime, timedelta
@@ -8,6 +9,23 @@ from rest_framework.permissions import IsAuthenticated
 from datetime import date
 from users.models import GirlUser
 from . import serializers, models
+
+import os
+
+
+# class EmailSend(APIView):
+#     @staticmethod
+#     def get(request):
+#         user = request.user
+#
+#         subject = "Menstrual Cycle Reminder"
+#         message = (f"Dear {user.username},\n\nThis is a reminder that your "
+#                    f"menstrual cycle is expected to start today. "
+#                    f"Please take the necessary precautions.\n\nBest regards,\nYour FloElla")
+#         from_email = os.getenv('DEFAULT_FROM_EMAIL')
+#         recipient_list = [user.email]
+#
+#         send_mail(subject, message, from_email, recipient_list)
 
 
 class MenstrualStatusDayAPIView(APIView):
@@ -52,16 +70,17 @@ class MenstrualStatusWeekAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
 
-
-
 class MenstrualStatusMonthAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     @staticmethod
     def get(request, year, month):
         current_user = request.user
-        objects_for_month = models.MenstrualDayStatus.objects.filter(user_id=current_user.id, date__year=year,
-                                                                     date__month=month)
+        objects_for_month = models.MenstrualDayStatus.objects.filter(
+            user_id=current_user.id,
+            date__year=year,
+            date__month=month
+        )
         serializer = serializers.MenstrualDayStatusSerializer(objects_for_month, many=True)
         if objects_for_month.exists():
             return Response(serializer.data)

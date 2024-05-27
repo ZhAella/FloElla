@@ -1,4 +1,6 @@
+import os
 from django.utils import timezone
+from django.core.mail import send_mail
 from datetime import timedelta
 from users.models import GirlUser
 from . import models
@@ -26,6 +28,15 @@ def update_status():
                 delay = (today - next_menstrual_day).days
                 delay_days = delay + 1
                 current_status = "Delay"
+
+                subject = "Menstrual Cycle Reminder"
+                message = (f"Dear {user.username},\n\nThis is a reminder that your "
+                           f"menstrual cycle is expected to start today. "
+                           f"Please take the necessary precautions.\n\nBest regards,\nYour FloElla")
+                from_email = os.getenv('DEFAULT_FROM_EMAIL')
+                recipient_list = [user.email]
+
+                send_mail(subject, message, from_email, recipient_list)
             elif ovulation > today >= follicular_phase:
                 current_status = 'Follicular phase'
             elif luteinization > today >= ovulation:
@@ -41,4 +52,3 @@ def update_status():
                     date=today
                 )
                 print('Changed')
-

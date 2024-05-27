@@ -5,7 +5,7 @@ scheduler = BackgroundScheduler()
 
 
 def start_scheduler():
-    scheduler.add_job(jobs.update_status, 'interval', minutes=100)
+    scheduler.add_job(jobs.update_status, 'interval', minutes=1)
     scheduler.start()
 
 
