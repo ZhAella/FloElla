@@ -3,10 +3,14 @@ from django.utils import timezone
 from models import MenstrualDayStatus, Status, Reminder
 import os
 import django
+import logging
 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'FloElla.settings')
 django.setup()
+
+
+logger = logging.getLogger('www.jobs')
 
 
 def count_days():
