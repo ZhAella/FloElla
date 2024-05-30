@@ -44,6 +44,7 @@ def update_status():
             elif today >= luteinization:
                 current_status = 'Luteinization'
             print(current_status)
+
             if current_status is not None:
                 models.MenstrualDayStatus.objects.create(
                     name=current_status,

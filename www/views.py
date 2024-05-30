@@ -1,7 +1,5 @@
-from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from datetime import datetime, timedelta
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
@@ -9,23 +7,6 @@ from rest_framework.permissions import IsAuthenticated
 from datetime import date
 from users.models import GirlUser
 from . import serializers, models
-
-import os
-
-
-# class EmailSend(APIView):
-#     @staticmethod
-#     def get(request):
-#         user = request.user
-#
-#         subject = "Menstrual Cycle Reminder"
-#         message = (f"Dear {user.username},\n\nThis is a reminder that your "
-#                    f"menstrual cycle is expected to start today. "
-#                    f"Please take the necessary precautions.\n\nBest regards,\nYour FloElla")
-#         from_email = os.getenv('DEFAULT_FROM_EMAIL')
-#         recipient_list = [user.email]
-#
-#         send_mail(subject, message, from_email, recipient_list)
 
 
 class MenstrualStatusDayAPIView(APIView):
@@ -116,7 +97,7 @@ class MarkMenstrualStartDayStatus(APIView):
         if not created:
             menstrual_day.save()
 
-        menstrual_day.symptom = "Menstrual day"
+        menstrual_day.name = "Menstrual day"
         menstrual_day.save()
 
         serializer = serializers.MenstrualDayStatusSerializer(menstrual_day, request.data)
@@ -138,7 +119,7 @@ class MarkMenstrualDayStatus(APIView):
         if not created:
             menstrual_day.save()
 
-        menstrual_day.symptom = "Menstrual day"
+        menstrual_day.name = "Menstrual day"
         menstrual_day.save()
 
         serializer = serializers.MenstrualDayStatusSerializer(menstrual_day, request.data)
@@ -163,7 +144,7 @@ class MarkMenstrualEndDayStatus(APIView):
         if not created:
             menstrual_day.save()
 
-        menstrual_day.symptom = "Menstrual day"
+        menstrual_day.name = "Menstrual day"
         menstrual_day.save()
 
         serializer = serializers.MenstrualDayStatusSerializer(menstrual_day, request.data)
@@ -177,7 +158,7 @@ class SymptomAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
     @staticmethod
-    def get(request):
+    def get(request, year, month, day):
         symptoms = models.SymptomName.objects.all()
         serializer = serializers.SymptomNameSerializer(symptoms, many=True)
         return Response(serializer.data)
